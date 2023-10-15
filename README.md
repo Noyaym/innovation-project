@@ -3,24 +3,24 @@
 ## Install conda --->
 
 ```bash
-    https://docs.conda.io/projects/miniconda/en/latest/
+https://docs.conda.io/projects/miniconda/en/latest/
 ```
 **Mark the Add to PATH option in the installer**
 
-### Check if conda is installed
+## Check if conda is installed --->
 
 ```bash
-    conda --version
+conda --version
 ```
 
-## Create conda environment
+## Create conda environment --->
 
 ```bash
-    conda create --name innovation python=3.11
+conda create --name innovation python=3.11
 ```
 
-## Install python packagess
+## Install python packagess --->
 
 ```bash
-    pip install -r requirements.txt
+pip install -r requirements.txt
 ```
