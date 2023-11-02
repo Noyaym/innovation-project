@@ -1,8 +1,5 @@
 import ntcore
 
-
-
-
 angle = 0
 
 inst = ntcore.NetworkTableInstance.getDefault()
@@ -29,6 +26,6 @@ table = inst.getTable("datatable")
 # Start publishing topics within that table that correspond to the X and Y values
 # for some operation in your program.
 # The topic names are actually "/datatable/x" and "/datatable/y".
-angle = table.getDoubleTopic("x").publish()
+angle = table.getDoubleTopic("angle").publish()
 
 
