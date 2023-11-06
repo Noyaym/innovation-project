@@ -9,20 +9,21 @@ cap = cv2.VideoCapture(0)
 cap.set(3, 640)
 cap.set(4, 480)
 
-inst = ntcore.NetworkTableInstance.getDefault()
+# inst = ntcore.NetworkTableInstance.getDefault()
 
-inst.startClient4("example client")
+# inst.startClient4("example client")
 
-# connect to a roboRIO with team number TEAM
-inst.setServerTeam(5635)
+# # connect to a roboRIO with team number TEAM
+# inst.setServerTeam(5635)
 
-# starting a DS client will try to get the roboRIO address from the DS application
-inst.startDSClient()
+# # starting a DS client will try to get the roboRIO address from the DS application
+# inst.startDSClient()
 
-inst.setServer("host", ntcore.NetworkTableInstance.kDefaultPort4)
+# inst.setServer("host", ntcore.NetworkTableInstance.kDefaultPort4)
 
-# Get the table within that instance that contains the data. Correct the table name.
-table = inst.getTable("datable")
+# # Get the table within that instance that contains the data. Correct the table name.
+# table = inst.getTable("datable")
+print("ok")
 
 # model
 model = YOLO('yolov8n.pt')
@@ -40,16 +41,22 @@ classNames = ["person", "bicycle", "car", "motorbike", "aeroplane", "bus", "trai
               "teddy bear", "hair drier", "toothbrush"
               ]
 
+print("ok2")
+
 
 while True:
     success, img = cap.read()
     results = model(img, stream=True)
 
+    print("ok3")
+
     # coordinates
     for r in results:
+        print("ok4")
         boxes = r.boxes
 
         for box in boxes:
+            print("ok5")
             # bounding box
             x1, y1, x2, y2 = box.xyxy[0]
             x1, y1, x2, y2 = int(x1), int(y1), int(x2), int(y2) # convert to int values
