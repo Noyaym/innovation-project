@@ -1,0 +1,158 @@
+import bpy
+import math
+
+#היונלו juniorxsoundל הדות 
+def clamp(x, minimum, maximum):
+    return max(minimum, min(x, maximum))
+
+def camera_view_bounds_2d(scene, cam_ob, me_ob):
+    """
+    Returns camera space bounding box of mesh object.
+
+    Negative 'z' value means the point is behind the camera.
+
+    Takes shift-x/y, lens angle and sensor size into account
+    as well as perspective/ortho projections.
+
+    :arg scene: Scene to use for frame size.
+    :type scene: :class:`bpy.types.Scene`
+    :arg obj: Camera object.
+    :type obj: :class:`bpy.types.Object`
+    :arg me: Untransformed Mesh.
+    :type me: :class:`bpy.types.Mesh´
+    :return: a Box object (call its to_tuple() method to get x, y, width and height)
+    :rtype: :class:`Box`
+    """
+
+    mat = cam_ob.matrix_world.normalized().inverted()
+    depsgraph = bpy.context.evaluated_depsgraph_get()
+    mesh_eval = me_ob.evaluated_get(depsgraph)
+    me = mesh_eval.to_mesh()
+    me.transform(me_ob.matrix_world)
+    me.transform(mat)
+
+    camera = cam_ob.data
+    frame = [-v for v in camera.view_frame(scene=scene)[:3]]
+    camera_persp = camera.type != 'ORTHO'
+
+    lx = []
+    ly = []
+
+    for v in me.vertices:
+        co_local = v.co
+        z = -co_local.z
+
+        if camera_persp:
+            if z == 0.0:
+                lx.append(0.5)
+                ly.append(0.5)
+            # Does it make any sense to drop these?
+            # if z <= 0.0:
+            #    continue
+            else:
+                frame = [(v / (v.z / z)) for v in frame]
+
+        min_x, max_x = frame[1].x, frame[2].x
+        min_y, max_y = frame[0].y, frame[1].y
+
+        x = (co_local.x - min_x) / (max_x - min_x)
+        y = (co_local.y - min_y) / (max_y - min_y)
+
+        lx.append(x)
+        ly.append(y)
+
+
+    min_x = clamp(min(lx), 0.0, 1.0)
+    max_x = clamp(max(lx), 0.0, 1.0)
+    min_y = clamp(min(ly), 0.0, 1.0)
+    max_y = clamp(max(ly), 0.0, 1.0)
+
+    mesh_eval.to_mesh_clear()
+
+    r = scene.render
+    fac = r.resolution_percentage * 0.01
+    dim_x = r.resolution_x * fac
+    dim_y = r.resolution_y * fac
+
+    # Sanity check
+    if round((max_x - min_x) * dim_x) == 0 or round((max_y - min_y) * dim_y) == 0:
+        return (0, 0, 0, 0)
+
+    #return (
+    #    round(min_x * dim_x),            # X
+    #    round(dim_y - max_y * dim_y),    # Y
+    #    round((max_x - min_x) * dim_x),  # Width
+    #    round((max_y - min_y) * dim_y)   # Height
+    #)
+    
+    return (
+         min_x + (max_x - min_x)/2,            # X
+         1 - max_y + (max_y - min_y)/2,            # Y
+         max_x - min_x,  # Width
+         max_y - min_y   # Height
+    )
+
+
+#rObjב םייטקבואה סקדניא
+oIndexes = [0,1]
+
+objects = []
+
+for i in oIndexes:
+    objects.append(bpy.data.collections["Collection"].children["rObjs"].all_objects[i])
+
+print(objects)
+    
+
+#object = bpy.data.collections["Collection"].all_objects["mesh99.003"]
+
+camera = bpy.data.collections["Collection"].all_objects["Camera"]
+
+scene = bpy.context.scene
+
+#tree_node = scene.node_tree
+
+
+#טסהטאדה תייקת תבותכ
+path = "C:\\Users\\Farjoon\\Desktop\\twoDataset\\"
+
+#טסהטאד קיפנ םהמש םימיירפה חווט
+start_frame = 1
+end_frame = 111
+
+frame_count = start_frame
+
+
+
+while frame_count <= end_frame:
+    #.רדנלב לש םימיירפה גויתל םאתהב תונומתהו םילביילה תומשל ופסויש םיספאה
+    label_zeros = 0 
+    if len(str(frame_count)) < 4:
+        label_zeros = 4 - len(str(frame_count))
+    
+    #לביילה ןכות
+    content = ""
+    
+    scene.frame_set(frame_count)
+
+    #לייבלה ןכות לא רקארטהמ עדימ קוקיז
+    cNum = 0
+    for o in objects:
+        bounds = camera_view_bounds_2d(scene,camera,o)
+        content += str(cNum) + " " + str(bounds[0]) + " " + str(bounds[1]) + " " + str(bounds[2]) + " " + str(bounds[3]) + "\n"
+        cNum += 1
+
+    #לביילה ץבוק תריצי
+    file = open(path + "labels\\" + ("0"*label_zeros) + str(frame_count) + ".txt",'w')
+    file.write(content)
+    file.close()
+    frame_count+=1
+
+#ןוטרסהמ םימיירפה ץוליח
+scene.render.filepath = path + "\\images\\"
+scene.frame_start = start_frame
+scene.frame_end = end_frame
+bpy.ops.render.render(animation=True, write_still=True)
+
+
+
