@@ -16,4 +16,9 @@ public final class Constants {
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
   }
+  public static class CameraConstants {
+    public static final int fov = 90; // change later
+    public static final int img_width = 1920;
+    public static final int img_height = 1080;
+  }
 }
