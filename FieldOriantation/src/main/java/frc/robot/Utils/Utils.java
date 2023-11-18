@@ -83,37 +83,34 @@ public class Utils {
 
     public static double[] averageIntersectionPoints(FieldPiece2[] fieldPieces) {
         int numPieces = fieldPieces.length;
-
+    
         // Calculate the number of combinations
-        int numCombinations = numPieces * (numPieces - 1) * (numPieces - 2) / 6;
-
+        int numCombinations = numPieces * (numPieces - 1) / 2; // TODO: Corrected the formula
+    
         // Initialize arrays to store intersection points
         double[] intersectionX = new double[numCombinations];
         double[] intersectionY = new double[numCombinations];
         int index = 0;
-
-        // Iterate over all combinations of three pieces
-        for (int i = 0; i < numPieces - 2; i++) {
-            for (int j = i + 1; j < numPieces - 1; j++) {
-                for (int k = j + 1; k < numPieces; k++) { //TODO: No need to do the intersection of every three (and who said there even is one?) just every two possible combinations
-                    // Calculate the intersection point of the lines formed by the three pieces
-                    double[] line1 = calculateLineEquation(fieldPieces[i], Pieces.TEST_POSE2D_ARRAY);
-                    double[] line2 = calculateLineEquation(fieldPieces[j], Pieces.TEST_POSE2D_ARRAY);
-                    double[] line3 = calculateLineEquation(fieldPieces[k], Pieces.TEST_POSE2D_ARRAY);
-
-                    // Find the intersection point of the three lines
-                    double[] intersection = findIntersection(findIntersection(line1, line2), line3); //TODO: so you find the intersection, a point, and then the intersection of a point and a line :) This is why not every three combinations but just two as I've mentioned
-
-                    // Store the intersection point coordinates
-                    if (intersection != null) {
-                        intersectionX[index] = intersection[0];
-                        intersectionY[index] = intersection[1];
-                        index++;
-                    }
+    
+        // Iterate over all combinations of two pieces
+        for (int i = 0; i < numPieces - 1; i++) {
+            for (int j = i + 1; j < numPieces; j++) { // TODO: Iterate over all combinations of two pieces
+                // Calculate the intersection point of the lines formed by the two pieces
+                double[] line1 = calculateLineEquation(fieldPieces[i], Pieces.TEST_POSE2D_ARRAY);
+                double[] line2 = calculateLineEquation(fieldPieces[j], Pieces.TEST_POSE2D_ARRAY);
+    
+                // Find the intersection point of the two lines
+                double[] intersection = findIntersection(line1, line2);
+    
+                // Store the intersection point coordinates
+                if (intersection != null) {
+                    intersectionX[index] = intersection[0];
+                    intersectionY[index] = intersection[1];
+                    index++;
                 }
             }
         }
-
+    
         // Calculate the average intersection point
         double sumX = 0;
         double sumY = 0;
@@ -121,11 +118,12 @@ public class Utils {
             sumX += intersectionX[i];
             sumY += intersectionY[i];
         }
-
+    
         double averageX = sumX / numCombinations;
         double averageY = sumY / numCombinations;
-
+    
         // Return the average intersection point as an array [averageX, averageY]
         return new double[]{averageX, averageY};
     }
+    
 }
