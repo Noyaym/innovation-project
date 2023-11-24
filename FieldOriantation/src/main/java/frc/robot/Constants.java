@@ -20,15 +20,15 @@ public final class Constants {
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
   }
-  public static class CameraConstants {
-    public static final int fov = 90; // change later
-    public static final int img_width = 1920;
-    public static final int img_height = 1080;
-    public static final double camera1Offset = 0;
-    public static final double camera2Offset = 120;
+  public static class CameraConstants { //TODO: change constants to ALL CAPS. Like this: IMG_WIDTH
+    public static final int FOV = 90; // change later
+    public static final int IMG_WIDTH = 1920;
+    public static final int IMG_HEIGHT = 1080;
+    public static final double CAMERA1_OFFSET = 0;
+    public static final double CAMERA2_OFFSET = 120;
   }
   public static class Pieces {
-    public static Piece2d[] testPose2dArray = {
+    public static Piece2d[] TEST_POSE2D_ARRAY = {
       new Piece2d("Cone", new Pose2d(1.0, 2.0, Rotation2d.fromDegrees(0.0))),
       new Piece2d("Corner", new Pose2d(3.0, 4.0, Rotation2d.fromDegrees(15.0))),
       new Piece2d("Pole", new Pose2d(5.0, 6.0, Rotation2d.fromDegrees(20.0))),
