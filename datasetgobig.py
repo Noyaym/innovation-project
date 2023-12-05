@@ -44,24 +44,29 @@ def britnes_chaneg(folder):
  labels_folder = os.path.join(folder, 'labels')
 
  # Duplicate images
+ x = 0
  for filename in os.listdir(images_folder):
      src = os.path.join(images_folder, filename)
      for i in range(1, 4):
-         dst = os.path.join(images_folder, f"{filename}_{i}.png")
+         dst = os.path.join(images_folder, f"{x}_{i}.png")
          shutil.copy2(src, dst)
          img = Image.open(dst)
          enhancer = ImageEnhance.Brightness(img)
          random_brightness = random.uniform(0.1, 1.9)
          img_enhanced = enhancer.enhance(random_brightness)
          img_enhanced.save(dst)
+     x = x +1
          
-
+ x = 0
  # Duplicate labels
  for filename in os.listdir(labels_folder):
      src = os.path.join(labels_folder, filename)
      for i in range(1, 4):
-         dst = os.path.join(labels_folder, f"{filename}_{i}.txt")
+         dst = os.path.join(labels_folder, f"{x}_{i}.txt")
          shutil.copy2(src, dst)
+     x = x +1
 
 
-britnes_chaneg('C:\\Users\\noamp\\Desktop\\datasetRaeal - Copy\\test')
+britnes_chaneg("C:\\Users\\noamp\\Downloads\\twotrack1arrange\\twotrack1arrange\\valid")
+britnes_chaneg("C:\\Users\\noamp\\Downloads\\twotrack1arrange\\twotrack1arrange\\train")
+britnes_chaneg("C:\\Users\\noamp\\Downloads\\twotrack1arrange\\twotrack1arrange\\test")
