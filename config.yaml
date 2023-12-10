@@ -1,6 +1,0 @@
-path: C:\Users\noamp\Downloads\twotrack1arrange\twotrack1arrange
-train: train\images
-val: valid\images
-names: 
-  0: coneholder
-  1: cubeholder
